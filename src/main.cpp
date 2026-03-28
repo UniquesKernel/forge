@@ -143,7 +143,7 @@ int main(void) {
 
   std::string build_cmd = "mkdir -p .build/bin";
   std::string cmd =
-      compiler_name + " src/main.cpp -o .build/bin/" + binary_name;
+      compiler_name + " -g -O0 src/main.cpp -o .build/bin/" + binary_name;
 
   printf("Executing: %s\n", build_cmd.c_str());
   int build_result = system(build_cmd.c_str());
