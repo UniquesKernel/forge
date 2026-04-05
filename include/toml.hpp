@@ -2,13 +2,28 @@
 #define FORGE_TOML_HPP
 
 #include "token.hpp"
+#include <filesystem>
 #include <string>
-struct Settings {
-    std::string binary_name;
-    std::string compiler;
+#include <vector>
+
+struct Library {
+        std::string           lib_name;
+        std::filesystem::path src_path;
+        std::vector<int>      dependencies;
 };
 
-char* read_project_file();
+struct Config {
+        std::string binary;
+        std::string compiler;
+        std::string compiler_standard;
+};
+
+struct Settings {
+        Config               config;
+        std::vector<Library> libraries;
+};
+
+char*    read_project_toml();
 Settings parse_project_file(TokenStream tokens);
 
 #endif

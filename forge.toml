@@ -1,3 +1,10 @@
+[[config]]
 name = "forge"
 compiler = "g++"
-std = "c11"
+std = "c++20"
+
+[[lib]]
+name = "compiler"
+
+[[lib]]
+name = "math"

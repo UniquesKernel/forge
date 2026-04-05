@@ -11,11 +11,11 @@ void compile(std::vector<CommandJson> commandsJson) {
 int link(Settings settings) {
         std::string build_cmd = "mkdir -p .build/bin";
 
-        std::string cmd       = settings.compiler + " -g -O0 ";
+        std::string cmd       = settings.config.compiler + settings.config.compiler_standard + " -g -O0 ";
         for (const auto& entry : std::filesystem::directory_iterator(".build/obj/")) {
                 cmd += entry.path().string() + " ";
         }
-        cmd += " -o .build/bin/" + settings.binary_name;
+        cmd += " -o .build/bin/" + settings.config.binary;
 
         printf("Executing: %s\n", build_cmd.c_str());
         int build_result = system(build_cmd.c_str());
@@ -30,9 +30,9 @@ int link(Settings settings) {
         }
 
         if (result >= 0) {
-                printf("Succesfully build, %s\n", settings.binary_name.c_str());
+                printf("Succesfully build, %s\n", settings.config.binary.c_str());
         } else {
-                printf("Failed to build: %s\n", settings.binary_name.c_str());
+                printf("Failed to build: %s\n", settings.config.binary.c_str());
                 return result;
         }
 
