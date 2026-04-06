@@ -19,11 +19,11 @@ struct Token {
 typedef struct TokenStream {
         Token* stream;
         int    count;
-}TokenStream;
+} TokenStream;
 
 namespace forge::token {
-Token       tokenize(char** src);
-TokenStream lexing(char* src);
+Token       tokenize(const char** src);
+TokenStream lexing(const char* src);
 } // namespace forge::token
 
 #endif

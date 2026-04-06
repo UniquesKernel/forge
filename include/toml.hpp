@@ -7,9 +7,15 @@
 #include <vector>
 
 struct Library {
-        std::string           lib_name;
-        std::filesystem::path src_path;
-        std::vector<int>      dependencies;
+        std::string              lib_name;
+        std::filesystem::path    src_path;
+        std::vector<std::string> dependencies;
+};
+
+struct Binary {
+        std::string              bin_name;
+        std::filesystem::path    src_path;
+        std::vector<std::string> dependencies;
 };
 
 struct Config {
@@ -21,9 +27,10 @@ struct Config {
 struct Settings {
         Config               config;
         std::vector<Library> libraries;
+        std::vector<Binary>  binaries;
 };
 
-char*    read_project_toml();
-Settings parse_project_file(TokenStream tokens);
+const char* read_project_toml();
+Settings    parse_project_file(TokenStream tokens);
 
 #endif

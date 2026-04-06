@@ -1,9 +1,10 @@
 #ifndef FORGE_COMPILE_COMMANDS_HPP
 #define FORGE_COMPILE_COMMANDS_HPP
 
+#include "toml.hpp"
+#include <filesystem>
 #include <string>
 #include <vector>
-#include "toml.hpp"
 
 struct CommandJson {
         std::string directory;
@@ -11,6 +12,6 @@ struct CommandJson {
         std::string file;
 };
 
-std::vector<CommandJson> build_compile_commands_json(Settings settings);
+std::vector<CommandJson> build_compile_commands_json(Settings* settings, const std::filesystem::path path);
 
 #endif

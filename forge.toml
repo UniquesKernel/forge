@@ -5,6 +5,3 @@ std = "c++20"
 
 [[lib]]
 name = "compiler"
-
-[[lib]]
-name = "math"
