@@ -3,5 +3,5 @@ name = "forge"
 compiler = "g++"
 std = "c++20"
 
-[[lib]]
+[[bin]]
 name = "compiler"
