@@ -1,17 +1,16 @@
 #ifndef FORGE_COMPILE_COMMANDS_HPP
 #define FORGE_COMPILE_COMMANDS_HPP
 
-#include "toml.hpp"
+#include "parser.hpp"
 #include <filesystem>
-#include <string>
-#include <vector>
 
-struct CommandJson {
-        std::string directory;
-        std::string command;
-        std::string file;
+struct CompileTask {
+        char**      argv;
+        char*       cmd_str;
+        const char* file;
 };
 
-std::vector<CommandJson> build_compile_commands_json(Settings* settings, const std::filesystem::path path);
+std::vector<CompileTask> build_compile_commands_json(forge::parser::Settings*    settings,
+                                                     const std::filesystem::path path);
 
 #endif

@@ -1,6 +1,12 @@
 #ifndef FORGE_ERROR_ASSERT_HPP
 #define FORGE_ERROR_ASSERT_HPP
 
+#include <cstdio>
+
+inline void log_error(const char* error_str, const char* file, int line) {
+        fprintf(stderr, "[ERROR] %s:%d — %s\n", file, line, error_str);
+}
+
 #define DEFER(cleanup_fn) __attribute__((cleanup(cleanup_fn)))
 
 /**
@@ -22,6 +28,7 @@
 #define REQUIRE(condition, error_code)                                                                                 \
         do {                                                                                                           \
                 if (!(condition)) [[unlikely]] {                                                                       \
+                        log_error(#error_code, __FILE__, __LINE__);                                                    \
                         return error_code;                                                                             \
                 }                                                                                                      \
         } while (0)
@@ -44,6 +51,7 @@
 #define INVARIANT(condition)                                                                                           \
         do {                                                                                                           \
                 if (!(condition)) [[unlikely]] {                                                                       \
+                        log_error("INVARIANT failed: " #condition, __FILE__, __LINE__);                                \
                         abort();                                                                                       \
                 }                                                                                                      \
         } while (0)

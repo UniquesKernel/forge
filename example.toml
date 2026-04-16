@@ -1,0 +1,75 @@
+# =================================================================
+# FORGE CONFIGURATION: THE "CONVENTION OVER CONFIGURATION" BUILD TOOL
+# =================================================================
+
+[[config]]
+name = "forge-project"
+compiler = "g++"      # Options: g++, gcc, clang, clang++
+std = "c++20"         # Forge enforces the standard across all targets
+
+# COMPILER FLAGS (+ to add, - to remove from Forge defaults)
+# Forge Default: -Wall, -Wextra, -Wpedantic, -Werror, -fstack-protector-all
+# Forge ignores '-' flags if they aren't part of the default set.
+flags = [
+    "-Werror",         # Opt-out: Don't treat warnings as errors
+    "+-march=native",  # Opt-in: Optimize for the host CPU
+    "+-O3"             # Opt-in: High optimization
+]
+
+# STATIC ANALYSIS: CLANG-TIDY
+# Default: Security, bugprone, and performance checks are ON. Style is OFF.
+clang_tidy = [
+    "+google-readability-*", # Opt-in to Google style guide
+    "+modernize-*",          # Opt-in to modernization suggestions
+    "-bugprone-some-check"   # Opt-out of a specific noisy check
+]
+
+# STATIC ANALYSIS: CPPCHECK
+# Default: --enable=warning,performance,portability (Security is always ON)
+cppcheck = [
+    "+style",                # Opt-in to Cppcheck style analysis
+    "-missingInclude"        # Opt-out of specific noise
+]
+
+# =================================================================
+# EXTERNAL DEPENDENCIES (Build Firewall)
+# =================================================================
+# Contract:
+# 1. Built first (leaf nodes). 
+# 2. Cannot depend on internal forge targets.
+# 3. Artifacts are automatically linked to dependent targets.
+[[external]]
+name = "sqlite3"
+source = "https://github.com/sqlite/sqlite.git"
+build_cmd = "gcc -c sqlite3.c -o sqlite3.o && ar rcs libsqlite3.a sqlite3.o"
+artifacts_libs = ["libsqlite3.a"]
+artifacts_includes = ["."] # Relative to the external source root
+
+# =================================================================
+# LIBRARIES
+# =================================================================
+# Convention: Source must be in lib/<name>/src/**
+# Convention: Public headers must be in include/<name>/**
+[[lib]]
+name = "engine"
+static = true      # Build as .a / .lib
+shared = false     # Can be both if both are true
+dependencies = ["sqlite3"]
+
+# =================================================================
+# BINARIES
+# =================================================================
+# Convention: Source must be in bin/<name>/src/**
+# Convention: Headers must be in include/<name>/**
+[[bin]]
+name = "forge_app"
+# TARGET FILTERING:
+# default: All OS/Arch supported if field is omitted.
+# If defined, target is excluded unless --os matches.
+os = ["linux", "windows"] 
+dependencies = ["engine"]
+
+[[bin]]
+name = "diagnostic_tool"
+os = ["linux"] # This binary will only build on Linux hosts
+dependencies = ["engine"]

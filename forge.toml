@@ -4,4 +4,7 @@ compiler = "g++"
 std = "c++20"
 
 [[bin]]
-name = "compiler"
+name = "forge"
+
+[[bin]]
+name = "example"

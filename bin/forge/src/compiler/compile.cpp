@@ -1,16 +1,15 @@
 #include "compile.hpp"
-#include "toml.hpp"
 #include <filesystem>
 #include <queue>
 #include <vector>
 
-void compile2(std::vector<CommandJson> commandsJson) {
+void compile2(std::vector<CompileTask> commandsJson) {
         for (const auto& entry : commandsJson) {
-                system(entry.command.c_str());
+                system(entry.cmd_str);
         }
 }
 
-int link2(Settings settings) {
+int link2(forge::parser::Settings settings) {
         std::string                       build_cmd  = "mkdir -p .build/bin";
         std::queue<std::filesystem::path> to_explore = std::queue<std::filesystem::path>();
         to_explore.push(".build/obj/");
