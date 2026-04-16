@@ -86,16 +86,26 @@ std::vector<CompileTask> build_compile_commands_json(forge::parser::Settings*   
                 }
 
                 // 3. Wait phase: Reclaim slots as they finish
-                if (!active_pids.empty()) {
+                if (active_pids.size() > 0) {
                         int   status;
                         // wait(-1, ...) waits for ANY child process to finish
                         pid_t finished_pid = wait(&status);
-
                         if (finished_pid > 0) {
                                 // Find and remove the PID from our active tracking list
-                                auto it = std::find(active_pids.begin(), active_pids.end(), finished_pid);
-                                if (it != active_pids.end()) {
-                                        active_pids.erase(it);
+                                int found_idx = -1;
+                                for (size_t i = 0; i < active_pids.size(); i++) {
+                                        if (active_pids[i] == finished_pid) {
+                                                found_idx = (int)i;
+                                                break;
+                                        }
+                                }
+
+                                if (found_idx >= 0) {
+                                        // Shift elements left to remove the found PID
+                                        for (size_t i = found_idx; i < active_pids.size() - 1; i++) {
+                                                active_pids[i] = active_pids[i + 1];
+                                        }
+                                        active_pids.pop_back();
                                 }
 
                                 if (WIFEXITED(status)) {
@@ -118,16 +128,18 @@ std::vector<CompileTask> build_compile_commands_json(forge::parser::Settings*   
                 return {}; // Logic to stop the linker would go here
         }
 
-        std::ofstream json_out(COMPILE_COMMANDS_FILE);
-        json_out << "[\n";
-        for (size_t i = 0; i < tasks.size(); ++i) {
-                json_out << "  {\n"
-                         << "    \"directory\": \"" << std::filesystem::current_path().string() << "\",\n"
-                         << "    \"command\": \"" << tasks[i].cmd_str << "\",\n"
-                         << "    \"file\": \"" << tasks[i].file << "\"\n"
-                         << "  }" << (i == tasks.size() - 1 ? "" : ",") << "\n";
-        }
-        json_out << "]";
-
         return tasks;
+}
+
+void write_compile_commands_json(const std::vector<CompileTask>& tasks) {
+        std::ofstream f("compile_commands.json");
+        f << "[\n";
+        for (size_t i = 0; i < tasks.size(); ++i) {
+                f << "  {\n";
+                f << "    \"directory\": \"" << std::filesystem::current_path().string() << "\",\n";
+                f << "    \"command\": \"" << tasks[i].cmd_str << "\",\n";
+                f << "    \"file\": \"" << tasks[i].file << "\"\n";
+                f << "  }" << (i == tasks.size() - 1 ? "" : ",") << "\n";
+        }
+        f << "]\n";
 }

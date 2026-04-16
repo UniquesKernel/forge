@@ -10,6 +10,7 @@ struct CompileTask {
         const char* file;
 };
 
+void                     write_compile_commands_json(const std::vector<CompileTask>& tasks);
 std::vector<CompileTask> build_compile_commands_json(forge::parser::Settings*    settings,
                                                      const std::filesystem::path path);
 
